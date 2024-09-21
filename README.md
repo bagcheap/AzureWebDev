@@ -67,9 +67,6 @@ Here’s a detailed breakdown of **Step 1: Setting Up Azure Storage for Front-En
 
 ---
 
-Do you want to proceed with the sub-steps for Step 2 (Configuring Azure Front Door) next, or do you want to dive into any specific details in Step 1?
-
-Here’s the breakdown of **Step 2: Configuring Azure Front Door for CDN and Load Balancing**:
 
 ### **Step 2: Configuring Azure Front Door for CDN and Load Balancing**
 
@@ -117,10 +114,6 @@ Here’s the breakdown of **Step 2: Configuring Azure Front Door for CDN and Loa
    - **2.5.3.** Open the URL in your browser and verify that your static website (hosted on blob storage) is being served through Azure Front Door.
 
 ---
-
-Would you like to continue with **Step 3: Building the Backend API** next, or do you want to focus on more details of Step 2 before moving forward?
-
-Here’s the detailed breakdown of **Step 3: Building the Backend API for Data (Stock Prices)**:
 
 ### **Step 3: Building the Backend API for Data (Stock Prices)**
 
@@ -190,12 +183,6 @@ Here’s the detailed breakdown of **Step 3: Building the Backend API for Data (
    - **3.6.1.** After deployment, go to "App Services" and find your app.
    - **3.6.2.** Copy the **API URL** (e.g., `https://stockpriceapi.azurewebsites.net/api/stock/AAPL`).
    - **3.6.3.** Test the API in production to ensure it works just like it did locally.
-
----
-
-This completes the backend setup. Would you like to continue with **Step 4: Connecting the Front End to the Backend API** or focus more on any sub-step in Step 3?
-
-Here’s the detailed breakdown of **Step 4: Connecting the Front End to the Backend API**:
 
 ---
 
@@ -411,13 +398,6 @@ Here’s the detailed breakdown of **Step 4: Connecting the Front End to the Bac
 
 ---
 
-This completes **Step 4: Connecting the Front End to the Backend API**.
-
-Would you like to proceed with **Step 5: Deploying and Testing the Web Application**, or do you have any questions or need further details on any of the steps so far?
-
-Here’s the detailed breakdown of **Step 5: Deploying and Testing the Web Application**:
-
----
 
 ### **Step 5: Deploying and Testing the Web Application**
 
@@ -498,13 +478,6 @@ Here’s the detailed breakdown of **Step 5: Deploying and Testing the Web Appli
 
 ---
 
-This completes **Step 5: Deploying and Testing the Web Application**.
-
-Would you like to move forward with **Step 6: Setting Up Security**, or do you need additional details for any of the previous steps?
-
-Here’s the detailed breakdown of **Step 6: Setting Up Security**:
-
----
 
 ### **Step 6: Setting Up Security (Optional but Recommended)**
 
@@ -583,13 +556,6 @@ Here’s the detailed breakdown of **Step 6: Setting Up Security**:
    
    - **6.10.2.** Consider performing a **security audit** or using third-party tools to scan for vulnerabilities in your web application.
 
----
-
-This completes **Step 6: Setting Up Security**.
-
-Let me know if you'd like to explore more specific details on any of these security aspects or need help implementing a particular step.
-
-Here's a more detailed and example-driven version of **Step 6: Setting Up Security**, using realistic values and configurations to clarify each concept:
 
 ---
 
@@ -825,4 +791,3 @@ Here's a more detailed and example-driven version of **Step 6: Setting Up Securi
 
 ---
 
-This version includes practical, hands-on examples that you can follow along. Let me know if you need further clarification on any step!
