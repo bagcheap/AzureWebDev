@@ -502,3 +502,327 @@ This completes **Step 5: Deploying and Testing the Web Application**.
 
 Would you like to move forward with **Step 6: Setting Up Security**, or do you need additional details for any of the previous steps?
 
+Here’s the detailed breakdown of **Step 6: Setting Up Security**:
+
+---
+
+### **Step 6: Setting Up Security (Optional but Recommended)**
+
+#### **6.1. Secure the Front-End (Blob Storage) with Shared Access Signatures (SAS)**
+   - **6.1.1.** If your static content should not be publicly accessible, you can secure your Blob Storage using **Shared Access Signatures (SAS)** to control access.
+     - **Go to your Storage Account** in Azure Portal.
+     - Navigate to **Shared access signature** under "Security + networking."
+     - Configure the following:
+       - **Allowed services:** Choose "Blob."
+       - **Allowed resource types:** Container and Object.
+       - **Allowed permissions:** Select appropriate permissions (e.g., "Read" for read-only access).
+       - **Start and expiry time:** Set the valid time period for the SAS.
+     - Click "Generate SAS token and URL."
+   - **6.1.2.** Use the generated SAS URL when accessing the front-end files, ensuring they are accessible only within the defined time window and with the specified permissions.
+
+#### **6.2. Enable HTTPS on Azure Front Door**
+   - **6.2.1.** Azure Front Door automatically enables HTTPS for traffic when using an Azure-provided domain. However, if you use a **custom domain**, follow these steps to secure the connection:
+     - Go to **Front Door** in Azure Portal.
+     - In the **Frontend/domains** section, select your custom domain.
+     - Enable **HTTPS** and choose whether to use **Azure-managed certificates** (recommended for simplicity) or upload your own certificates.
+   - **6.2.2.** Azure Front Door will automatically enforce SSL/TLS encryption on all incoming traffic to ensure secure communication.
+
+#### **6.3. Secure the Backend API**
+   - **6.3.1.** If your API handles sensitive or private data, secure the API by limiting access and requiring authentication.
+     - **Option 1:** Use **API keys** to authenticate requests. Only authorized clients with valid API keys can access your API.
+       - Generate and validate API keys in your backend logic.
+     - **Option 2:** Use **Azure Active Directory (Azure AD)** to secure API endpoints.
+       - Set up **Azure AD** to authenticate users and allow only authorized requests to your API.
+   - **6.3.2.** Implement rate limiting to prevent abuse of the API.
+     - Set up restrictions on the number of requests a user or IP address can make within a certain period.
+
+#### **6.4. Enable CORS for Front-End and API**
+   - **6.4.1.** **Cross-Origin Resource Sharing (CORS)** is essential for security when your front-end and back-end are hosted on different domains.
+     - Ensure you have restricted CORS settings to allow only the necessary origins (e.g., your Azure Front Door domain) in your backend API to prevent malicious websites from making unauthorized requests.
+
+   - **6.4.2.** If your front-end files are stored in Azure Blob Storage, you can configure CORS for the Blob service:
+     - Go to **Storage Account** → **CORS** settings.
+     - Set allowed origins (e.g., `https://yourfrontdoor.azurefd.net`), methods (e.g., GET), and allowed headers.
+
+#### **6.5. Set Up Firewalls and Network Restrictions (Optional)**
+   - **6.5.1.** Use **Azure Storage Firewalls** to limit who can access your Blob Storage containers.
+     - In the **Storage Account**, go to **Firewalls and virtual networks**.
+     - Allow access only from specific IP addresses or virtual networks, preventing unauthorized access.
+
+   - **6.5.2.** Similarly, for the **App Service** hosting your API, restrict network access to only the IPs or services that require access:
+     - In your **App Service**, go to **Networking** → **Access restrictions** and specify the allowed IP ranges.
+
+#### **6.6. Enable Logging and Monitoring for Security**
+   - **6.6.1.** Set up **Azure Monitor** and **Application Insights** to track and log API requests, errors, and potential security breaches.
+     - Monitor API traffic and usage patterns for unusual activity.
+     - Set up alerts for potential threats like DDoS attacks, unusually high traffic, or unauthorized access attempts.
+
+   - **6.6.2.** Enable **Azure Storage Analytics** to log read, write, and delete operations on your Blob Storage. This helps track any suspicious activity.
+
+#### **6.7. Configure Access Control with Azure RBAC**
+   - **6.7.1.** Use **Azure Role-Based Access Control (RBAC)** to manage permissions for accessing and managing your Azure resources (e.g., Blob Storage, App Service).
+     - In the Azure Portal, go to **Access control (IAM)** for the relevant resource.
+     - Assign roles to users or applications based on the principle of **least privilege** (e.g., granting only the required access).
+   - **6.7.2.** Limit access to sensitive areas (e.g., blob storage containers or API configurations) to ensure only authorized individuals can modify or view the resources.
+
+#### **6.8. Encrypt Data in Transit and at Rest**
+   - **6.8.1.** Ensure that all communication between your front-end and back-end is encrypted using HTTPS.
+   - **6.8.2.** Enable **encryption at rest** for your Blob Storage and App Service:
+     - By default, Azure Blob Storage and Azure SQL databases are encrypted using **Azure Storage Service Encryption (SSE)**. However, verify that it's enabled for your specific resources.
+
+#### **6.9. Enable DDoS Protection (Optional but Recommended)**
+   - **6.9.1.** To protect your web application from Distributed Denial of Service (DDoS) attacks, enable **Azure DDoS Protection**:
+     - Go to **Azure DDoS Protection** settings in your Azure portal and configure it to protect the necessary resources.
+   - **6.9.2.** Azure Front Door also provides built-in DDoS protection by distributing traffic across multiple regions, mitigating attacks before they reach your back-end services.
+
+#### **6.10. Test Your Security Setup**
+   - **6.10.1.** Perform a thorough test of your security configuration:
+     - Test API access and verify that unauthorized requests are denied.
+     - Use browser developer tools to ensure CORS is working correctly and no unintentional resources are accessible.
+     - Test secure HTTPS access across your front-end and back-end services.
+   
+   - **6.10.2.** Consider performing a **security audit** or using third-party tools to scan for vulnerabilities in your web application.
+
+---
+
+This completes **Step 6: Setting Up Security**.
+
+Let me know if you'd like to explore more specific details on any of these security aspects or need help implementing a particular step.
+
+Here's a more detailed and example-driven version of **Step 6: Setting Up Security**, using realistic values and configurations to clarify each concept:
+
+---
+
+### **Step 6: Setting Up Security (with Examples)**
+
+---
+
+#### **6.1. Secure the Front-End (Blob Storage) with Shared Access Signatures (SAS)**
+
+**Scenario**: You want to restrict access to the static files hosted in your Azure Blob Storage so that only authorized users or services can access them.
+
+- **6.1.1.** Go to your Storage Account in the [Azure Portal](https://portal.azure.com).
+- **6.1.2.** Navigate to **Shared access signature** under "Security + networking."
+- **6.1.3.** Configure the following:
+
+    - **Allowed services:** `Blob`
+    - **Allowed resource types:** `Container` and `Object`
+    - **Allowed permissions:** `Read`
+    - **Start and expiry time:** Set the access duration for 24 hours (start now, and expire in 24 hours).
+  
+    Example values:
+    - Start time: `2024-09-20T00:00Z`
+    - Expiry time: `2024-09-21T00:00Z`
+  
+    - **Allowed IP addresses:** Enter specific IP addresses that can access this blob (e.g., `123.45.67.89`).
+    - **Protocol:** Choose `HTTPS only` to ensure secure access.
+
+- **6.1.4.** Click **Generate SAS token and URL**.
+- **6.1.5.** Use the generated **Blob SAS URL** when accessing the front-end files, which now have time-limited, IP-restricted access.
+
+---
+
+#### **6.2. Enable HTTPS on Azure Front Door**
+
+**Scenario**: You want all traffic to your application to be encrypted with HTTPS to protect user data.
+
+- **6.2.1.** In the Azure Portal, go to your **Azure Front Door** instance.
+- **6.2.2.** In the **Frontend/domains** section, select your domain (e.g., `mywebappfrontdoor.azurefd.net`).
+- **6.2.3.** Scroll to the **Custom domain HTTPS** section.
+  - If using a custom domain (e.g., `www.mysecureapp.com`), ensure that **HTTPS** is enabled.
+  
+    - **SSL/TLS type:** Choose **Azure-managed certificate**.
+    - Click **Save**.
+
+- **6.2.4.** After setting this up, your domain (e.g., `https://www.mysecureapp.com`) will now be served over HTTPS, providing encryption for all user data.
+
+---
+
+#### **6.3. Secure the Backend API with API Keys**
+
+**Scenario**: You want to protect your backend API so that only clients with an authorized API key can access stock price data.
+
+- **6.3.1.** Add API key authentication to your backend.
+
+  - **For Flask (Python):**
+  
+    - Install the `Flask` API Key extension:
+  
+      ```bash
+      pip install flask
+      ```
+
+    - Update your `app.py` to include an API key check:
+  
+      ```python
+      from flask import Flask, request, jsonify
+
+      app = Flask(__name__)
+
+      # Define an API key for authorized access
+      API_KEY = 'mysecretapikey123'
+
+      @app.route('/api/stock/<ticker>', methods=['GET'])
+      def get_stock_price(ticker):
+          # Get the API key from the request headers
+          api_key = request.headers.get('X-API-KEY')
+
+          # Check if the provided API key is correct
+          if api_key != API_KEY:
+              return jsonify({'error': 'Unauthorized'}), 401
+
+          # Process stock price fetching here
+          stock_price = 150  # Simulate stock price retrieval
+          return jsonify({'ticker': ticker, 'price': stock_price})
+      
+      if __name__ == '__main__':
+          app.run(debug=True)
+      ```
+
+  - **6.3.2.** Now, only clients that send the correct API key in the `X-API-KEY` header can access your API.
+    
+    Example API request:
+
+    ```bash
+    curl -H "X-API-KEY: mysecretapikey123" https://mywebappapi.azurewebsites.net/api/stock/AAPL
+    ```
+
+---
+
+#### **6.4. Enable CORS for the Front-End and API**
+
+**Scenario**: Your API is hosted on `https://mywebappapi.azurewebsites.net`, and your front end is on `https://mywebappfrontdoor.azurefd.net`. You need to allow CORS so the front-end can make requests to the API.
+
+- **6.4.1.** Add CORS configuration to your backend API.
+
+  - **For Flask (Python):**
+  
+    - Install the `Flask-CORS` package:
+  
+      ```bash
+      pip install flask-cors
+      ```
+
+    - Update your `app.py`:
+  
+      ```python
+      from flask_cors import CORS
+
+      app = Flask(__name__)
+      CORS(app, resources={r"/api/*": {"origins": "https://mywebappfrontdoor.azurefd.net"}})
+      ```
+
+  - **For Node.js (Express):**
+
+    - Install the `cors` package:
+
+      ```bash
+      npm install cors
+      ```
+
+    - Update your `app.js`:
+
+      ```javascript
+      const cors = require('cors');
+      const express = require('express');
+      const app = express();
+
+      // Allow only requests from the front-end domain
+      app.use(cors({
+          origin: 'https://mywebappfrontdoor.azurefd.net'
+      }));
+      ```
+
+- **6.4.2.** Now, your API only accepts requests from `https://mywebappfrontdoor.azurefd.net`.
+
+---
+
+#### **6.5. Set Up Azure Storage Firewall and Network Restrictions**
+
+**Scenario**: You want to restrict access to your Blob Storage so that only requests from Azure Front Door can access the static files.
+
+- **6.5.1.** In your Storage Account, go to **Firewalls and virtual networks** under "Security + networking."
+
+- **6.5.2.** Configure the following:
+  - **Allow access from**: Selected networks.
+  - **Virtual networks**: Add your Azure Virtual Network (if applicable).
+  - **Firewall rules**: Add specific IP ranges (e.g., the IPs of your trusted networks).
+
+- **6.5.3.** Save the settings to ensure that only the allowed networks can access your Blob Storage.
+
+---
+
+#### **6.6. Enable Logging and Monitoring for Security**
+
+**Scenario**: You want to log all access and operations performed on your API and Blob Storage to detect any suspicious activity.
+
+- **6.6.1.** In the Azure Portal, go to **Application Insights** for your API.
+  - Set up monitoring for **API performance** and **requests** to track the usage of your backend.
+  
+    Example setup:
+    - Monitor failed requests (e.g., unauthorized access attempts).
+    - Track slow API response times.
+
+- **6.6.2.** For **Blob Storage**, enable logging:
+  - Go to your Storage Account in Azure Portal.
+  - Under **Monitoring**, click on **Diagnostics settings**.
+  - Enable logging for **Read, Write, Delete** operations.
+  - Set up an output to store logs in another storage account or send logs to Azure Monitor.
+
+---
+
+#### **6.7. Configure Access Control with Azure RBAC**
+
+**Scenario**: You want to ensure only certain users or roles can manage or view your Azure resources.
+
+- **6.7.1.** In the Azure Portal, go to **Access control (IAM)** for your storage account or API.
+- **6.7.2.** Click on **Add role assignment** and assign the appropriate role:
+  - **Example roles**:
+    - **Storage Blob Data Reader**: Allows a user to read blobs.
+    - **Storage Blob Data Contributor**: Allows a user to read and write blobs.
+  - **User/Group**: Add the relevant user or service principal.
+
+    Example: Assign `Storage Blob Data Reader` to `app@mycompany.com` to allow them to read from Blob Storage but not modify anything.
+
+---
+
+#### **6.8. Encrypt Data in Transit and at Rest**
+
+**Scenario**: You want to ensure all data between users and your web app is encrypted and that data stored in Azure Blob Storage is encrypted at rest.
+
+- **6.8.1.** For **data in transit**, ensure HTTPS is enabled for both the front-end (via Azure Front Door) and backend (via Azure App Service).
+
+- **6.8.2.** For **data at rest**, Azure Storage encrypts data by default using **Azure Storage Service Encryption (SSE)**.
+  - To verify, go to your **Storage Account** in Azure.
+  - Under **Encryption**, ensure that **Azure-managed keys** are enabled for data encryption.
+
+---
+
+#### **6.9. Enable DDoS Protection**
+
+**Scenario**: You want to protect your app from Distributed Denial of Service (DDoS) attacks.
+
+- **6.9.1.** Azure Front Door provides basic DDoS protection, but you can enable **Azure DDoS Protection Standard** for enhanced protection.
+
+- **6.9.2.** Go to **Azure DDoS Protection** in the portal, create a DDoS protection plan, and apply it to your resources (e.g., App Service and Storage Account).
+
+---
+
+#### **6.
+
+10. Test Your Security Setup**
+
+**Scenario**: You want to ensure that all security configurations are functioning as expected.
+
+- **6.10.1.** Use tools like **Postman** or **curl** to test API access with and without API keys.
+  - Example test:
+    ```bash
+    curl -H "X-API-KEY: wrongapikey" https://mywebappapi.azurewebsites.net/api/stock/AAPL
+    ```
+    The response should be `401 Unauthorized`.
+
+- **6.10.2.** Use browser developer tools (F12) to ensure **CORS** is enabled and no unauthorized domains can access the API.
+
+---
+
+This version includes practical, hands-on examples that you can follow along. Let me know if you need further clarification on any step!
