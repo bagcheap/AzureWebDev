@@ -774,9 +774,7 @@ Here’s a detailed breakdown of **Step 1: Setting Up Azure Storage for Front-En
 
 ---
 
-#### **6.
-
-10. Test Your Security Setup**
+#### **6.10. Test Your Security Setup**
 
 **Scenario**: You want to ensure that all security configurations are functioning as expected.
 
